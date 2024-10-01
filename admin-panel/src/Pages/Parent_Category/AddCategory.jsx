@@ -1,18 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../common/Breadcrumb";
 import axios from "axios";
 import { AdminBaseUrl } from "../../config/config";
+import { useNavigate } from "react-router-dom";
 
 export default function AddCategory() {
 
+  let [redirectstatus,setredirectstatus]=useState(false)
+  let navigate=useNavigate()
   let handleSave=(event)=>{
     event.preventDefault();
     let formDataobj=new FormData(event.target)
     axios.post(AdminBaseUrl+"/category/insert",formDataobj)
     .then((res)=>{
       console.log(res.data)
+      setredirectstatus(true)
     })
   }
+
+  useEffect(()=>{
+    if(redirectstatus){
+      setredirectstatus(false)
+      navigate('/parent-category/view-category')
+    }
+
+  },[redirectstatus])
   return (
     <section className="w-full">
           <Breadcrumb
