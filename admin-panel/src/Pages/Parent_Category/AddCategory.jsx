@@ -13,18 +13,19 @@ export default function AddCategory() {
     let formDataobj=new FormData(event.target)
     axios.post(AdminBaseUrl+"/category/insert",formDataobj)
     .then((res)=>{
-      console.log(res.data)
-      setredirectstatus(true)
+        if(res.data.status==1){
+            //success
+            window.alert("Data Save")
+        }
+        else{
+            if(res.data.error.code==11000){
+               window.alert("Category Name allredy exits...")
+            }
+        }
     })
   }
 
-  useEffect(()=>{
-    if(redirectstatus){
-      setredirectstatus(false)
-      navigate('/parent-category/view-category')
-    }
 
-  },[redirectstatus])
   return (
     <section className="w-full">
           <Breadcrumb
@@ -47,7 +48,7 @@ export default function AddCategory() {
                   </label>
                   <input
                     type="text"
-                    name="name"
+                    name="categoryName"
                     id="base-input"
                     className="text-[19px] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 px-3 "
                     placeholder="Category Name"
@@ -84,14 +85,14 @@ export default function AddCategory() {
                   >
                     Category Description
                   </label>
-                  <textarea name="description" id="message" rows="3" className=" resize-none block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 " placeholder="Add Product Description....."></textarea>
+                  <textarea name="categoryDescription" id="message" rows="3" className=" resize-none block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 " placeholder="Add Product Description....."></textarea>
                 </div>
                 <div className="pe-5 ps-1">
                   <span className="flex items-center gap-3">
                     Status :
                     <input
                       id="link-radio"
-                      name="status"
+                      name="categoryStatus"
                       type="radio"
                       value={true}
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
@@ -99,7 +100,7 @@ export default function AddCategory() {
                     Active
                     <input
                       id="link-radio"
-                      name="status"
+                      name="categoryStatus"
                       type="radio"
                       value={false}
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "

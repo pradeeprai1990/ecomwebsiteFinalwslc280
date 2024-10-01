@@ -37,7 +37,7 @@ export default function AddColor() {
                   >
                     Color Picker
                   </label>
-                  <ChromePicker />
+                    <input type="color" />
                   <br />
                 </div>
                 <div className="pe-5 ps-1">
