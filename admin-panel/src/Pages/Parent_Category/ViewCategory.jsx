@@ -1,8 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Breadcrumb from '../../common/Breadcrumb'
+import axios from 'axios';
+import { AdminBaseUrl } from "../../config/config";
 
 export default function ViewCategory() {
     let [orderModal, setOrderModal] = useState(false);
+
+    useEffect(()=>{
+      axios.get(AdminBaseUrl+"/category/read-categories")
+    .then((res)=>{
+      console.log(res.data)
+    })
+    },[]);
   return (
     <section className="w-full">
               {/* Order Modal Start */}

@@ -4,8 +4,11 @@ let cors=require("cors");
 require("dotenv").config()
 const mongoose = require('mongoose');
 const { mainRoute } = require("./App/mainRoute");
+const path = require('path');
+
 app.use(cors())
 app.use(express.json())
+app.use('/frank-and-files/admin', express.static(path.join(__dirname,'uploads','category')));
 app.use(mainRoute)
 
 

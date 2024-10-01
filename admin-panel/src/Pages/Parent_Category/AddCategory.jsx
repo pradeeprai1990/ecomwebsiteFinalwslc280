@@ -47,7 +47,7 @@ export default function AddCategory() {
                   </label>
                   <input
                     type="text"
-                    name="categoryName"
+                    name="name"
                     id="base-input"
                     className="text-[19px] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 px-3 "
                     placeholder="Category Name"
@@ -84,7 +84,7 @@ export default function AddCategory() {
                   >
                     Category Description
                   </label>
-                  <textarea name="categoryDescription" id="message" rows="3" className=" resize-none block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 " placeholder="Add Product Description....."></textarea>
+                  <textarea name="description" id="message" rows="3" className=" resize-none block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 " placeholder="Add Product Description....."></textarea>
                 </div>
                 <div className="pe-5 ps-1">
                   <span className="flex items-center gap-3">
