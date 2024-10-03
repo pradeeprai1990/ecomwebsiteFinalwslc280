@@ -62,16 +62,16 @@ let categoryInsert=async (req,res)=>{
     
 }
 
-const readParentCategories = (req, res)=>{
-    // ParentCategory.find()
-    // .then((reqponse)=>{
-    //     const file_path = `${req.protocol}://${req.get('host')}/frank-and-files/admin/`;
-    //     res.status(200).json({message:'success', data:reqponse, file_path})
-    // })
-    // .catch((error)=>{
-    //     console.log(error);
-    //     res.status(500).json({message:'internal server error'});
-    // })
-};
+const categoryView =async (req, res)=>{
+    let categoryData=await categoryModel.find();
+    let obj={
+        status:1,
+        path:process.env.CATEGORYIMGSTATICPATH,
+        data:categoryData
+    }
+    res.status(200).json(obj)
+}
 
-module.exports={categoryInsert,readParentCategories}
+//http:localhost:8000/admin/category/view
+
+module.exports={categoryInsert,categoryView}
