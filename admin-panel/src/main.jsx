@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import 'react-toastify/dist/ReactToastify.css';
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import 'sweetalert2/src/sweetalert2.scss'
 import Home from "./Home.jsx";
 import {
   createBrowserRouter,
@@ -127,7 +128,7 @@ const route = createBrowserRouter(
           <Route path="view-size" element={<ViewSize />}></Route>
         </Route>
         <Route path="parent-category">
-          <Route path="add-category" element={<AddCategory />}></Route>
+          <Route path="add-category/:id?" element={<AddCategory />}></Route>
           <Route path="view-category" element={<ViewCategory />}></Route>
         </Route>
         <Route path="sub-category">

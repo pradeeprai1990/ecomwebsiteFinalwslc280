@@ -1,5 +1,5 @@
 const { categoryModel } = require("../../models/Category")
-
+let fs=require("fs")
 let categoryInsert=async (req,res)=>{
 
 
@@ -72,6 +72,86 @@ const categoryView =async (req, res)=>{
     res.status(200).json(obj)
 }
 
-//http:localhost:8000/admin/category/view
+let singleDelete=async (req,res)=>{
+    let id=req.params.id;
 
-module.exports={categoryInsert,categoryView}
+    let data=await categoryModel.findOne({_id:id})
+    if(data){
+        let imageName=data.categoryImage;
+        let path="uploads/category/"+imageName
+        fs.unlinkSync(path)
+
+        let deleteRes=await categoryModel.deleteOne({_id:id})
+        let obj={
+            status:1,
+            msg:"Delete data",
+            deleteRes
+        }
+       res.send(obj)
+    }
+    
+}
+
+let multiDelete=async (req,res)=>{
+    let {ids}=req.body; //[1,2,3]
+    for(let id of ids){
+        let data=await categoryModel.findOne({_id:id})
+        if(data){
+            let imageName=data.categoryImage;
+            let path="uploads/category/"+imageName
+            fs.unlinkSync(path)
+            let deleteRes=await categoryModel.deleteOne({_id:id})  
+        }     
+    }
+
+    let obj={
+        status:1,
+        msg:"Delete data",
+        
+    }
+    res.send(obj)
+}
+
+let editRowData=async (req,res)=>{
+    let id=req.params.id;
+    let data=await categoryModel.findOne({_id:id})
+    let obj={
+        status:1,
+        path:process.env.CATEGORYIMGSTATICPATH,
+        data
+    }
+
+    res.send(obj)
+
+}
+
+
+let updateCategory=async (req,res)=>{
+    let id=req.params.id;
+    
+    let obj={
+        categoryName:req.body.categoryName,
+        categoryDescription:req.body.categoryDescription,
+        categoryStatus:req.body.categoryStatus
+    }
+
+
+    if(req.file){
+        if(req.file.filename){
+            obj['categoryImage']=req.file.filename
+        }
+    }
+   
+
+    let updateData=await categoryModel.updateOne({_id:id},{$set:obj})
+    let resObj={
+        status:1,
+        msg:"Data Update",
+        updateData
+    }
+    res.send(resObj)
+
+}
+//http:localhost:8000/admin/category/updaterow/67040f9461a0a347b9be33af
+
+module.exports={categoryInsert,categoryView,singleDelete,multiDelete,editRowData,updateCategory}
