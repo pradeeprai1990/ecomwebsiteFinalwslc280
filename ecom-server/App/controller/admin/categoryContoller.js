@@ -63,11 +63,40 @@ let categoryInsert=async (req,res)=>{
 }
 
 const categoryView =async (req, res)=>{
-    let categoryData=await categoryModel.find();
+    let serachObj={
+
+    }
+
+    let limit=2
+
+    let {catName,catDesc,pageNumber}=req.query;
+
+    if(catName!==''){
+        serachObj['categoryName']= new RegExp(catName,'i')
+    }   
+
+    if(catDesc!==''){
+        serachObj['categoryDescription']= new RegExp(catDesc,'i')
+    }   
+
+    console.log(serachObj)
+    //serachObj={ categoryName:"Men" }
+
+    let categoryData=await categoryModel.find(serachObj).skip(  (pageNumber-1)*limit ).limit(limit);
+
+
+    let totalPageNumber=await categoryModel.find(serachObj);
+
+    let allPage= Math.ceil(totalPageNumber.length/limit); //
+
+ 
+
     let obj={
         status:1,
         path:process.env.CATEGORYIMGSTATICPATH,
-        data:categoryData
+        data:categoryData,
+        allPage,
+        limit
     }
     res.status(200).json(obj)
 }

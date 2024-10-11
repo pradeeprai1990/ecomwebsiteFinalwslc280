@@ -29,7 +29,7 @@ import Orders from "./Pages/Orders/Orders.jsx";
 import SliderDetails from "./Pages/Slider/SliderDetails.jsx";
 import SliderView from "./Pages/Slider/SliderView.jsx";
 import RootLayout from "./layout/RootLayout.jsx";
-
+import 'react-responsive-pagination/themes/classic.css';
 // const route=createBrowserRouter([
 //   {
 //     path:"/",

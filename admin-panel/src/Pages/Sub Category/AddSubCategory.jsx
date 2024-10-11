@@ -1,7 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Breadcrumb from "../../common/Breadcrumb";
+import axios from "axios";
+import { AdminBaseUrl } from "../../config/config";
 
 export default function AddSubCategory() {
+
+  let [parentCat,setParentCat]=useState([])
+
+  let saveSubCategory=(event)=>{
+      event.preventDefault();
+      let formDataobj = new FormData(event.target)
+  
+      axios.post(AdminBaseUrl + "/subcategory/insert", formDataobj)
+      .then((res)=>{
+        console.log(res.data)
+      })
+  }
+
+  useEffect(()=>{
+    axios.get(AdminBaseUrl+`subcategory/parent-category`)
+    .then((res)=>{
+      if(res.data.status){
+        setParentCat(res.data.data)
+      }
+    })
+  },[])
+
   return (
     <section className="w-full">
           <Breadcrumb
@@ -14,7 +38,7 @@ export default function AddSubCategory() {
               <h3 className="text-[26px] font-semibold bg-slate-100 py-3 px-4 rounded-t-md border border-slate-400">
                 Add Sub Category
               </h3>
-              <form className="border border-t-0 p-3 rounded-b-md border-slate-400">
+              <form onSubmit={saveSubCategory} className="border border-t-0 p-3 rounded-b-md border-slate-400">
                 <div className="mb-5">
                   <label
                     for="base-input"
@@ -37,16 +61,23 @@ export default function AddSubCategory() {
                   >
                     Parent Category Name
                   </label>
-
+                 
                   <select
                     id="default"
-                    name="parentCatSelectBox"
+                    name="parentCatId"
                     className=" border-2 border-gray-300 text-gray-900 mb-6 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
                   >
                     <option selected>--Select Category--</option>
-                    <option value="Mens">Men's</option>
-                    <option value="Women">Women</option>
-                    <option value="Sale">Sale</option>
+
+                      {parentCat.map((items,index)=>{
+                        return(
+                          <option value={items._id}  key={index}>
+                            {items.categoryName}
+                          </option>
+                        )
+                      })}
+                    
+                   
                   </select>
                 </div>
                 <div className="mb-5">
@@ -56,13 +87,13 @@ export default function AddSubCategory() {
                   >
                     Category Image
                   </label>
-                  <form className="max-w-full">
+                 
                     <label for="file-input" className="sr-only">
                       Choose file
                     </label>
                     <input
                       type="file"
-                      name="subCatFile-input"
+                      name="subcategoryImage"
                       id="file-input"
                       className="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none  
     file:bg-gray-50 file:border-0
@@ -71,7 +102,7 @@ export default function AddSubCategory() {
     "
                       multiple
                     />
-                  </form>
+                  
                 </div>
                 <div className="mb-5">
                   <label
@@ -95,7 +126,7 @@ export default function AddSubCategory() {
                       id="link-radio"
                       name="status"
                       type="radio"
-                      value=""
+                      value="1"
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
                     ></input>
                     Active
@@ -103,7 +134,7 @@ export default function AddSubCategory() {
                       id="link-radio"
                       name="status"
                       type="radio"
-                      value=""
+                      value="0"
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
                     ></input>
                     Deactive

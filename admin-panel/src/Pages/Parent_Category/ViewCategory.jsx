@@ -4,20 +4,45 @@ import axios from 'axios';
 import { AdminBaseUrl } from "../../config/config";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import { Link } from 'react-router-dom';
+import ResponsivePagination from 'react-responsive-pagination';
 
 export default function ViewCategory() {
   let [orderModal, setOrderModal] = useState(false);
   let [path, setPath] = useState('')
   let [data, setData] = useState([])
   let [allCheckedId,setallCheckedId]=useState([])
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages,setTotalPages] =useState(0);
+  const [limit,setLimit] =useState(0);
+
+
+  let [SearchData,setSearchData]=useState({
+    catName:'',
+    catDesc:'',
+    pageNumber:1
+  })
+
+  let getValueorSetValue=(event)=>{
+    let oldSerach={...SearchData} //copy
+            //catName
+    oldSerach[event.target.name]=event.target.value;
+    setSearchData(oldSerach)
+
+  }
 
   let getCategory = () => {
-    axios.get(`${AdminBaseUrl}category/view`)
+    let obj={...SearchData}
+    obj['pageNumber']=currentPage
+    axios.get(`${AdminBaseUrl}category/view`,{
+      params:obj
+    })
       .then((res) => res.data)
       .then((finalRes) => {
         if (finalRes.status == 1) {
           setPath(finalRes.path)
           setData(finalRes.data)
+          setTotalPages(finalRes.allPage)
+          setLimit(finalRes.limit)
         }
       })
   }
@@ -105,84 +130,45 @@ else{
 
     
   }
-  useEffect(() => {
-    getCategory()
-  }, []);
+
+
+
 
   useEffect(()=>{
-    console.log(allCheckedId)
-  },[allCheckedId])
+    
+      
+      getCategory()
+           
+  },[currentPage])
+
+
+
+
+
+  let submitSearchForm=(event)=>{
+    event.preventDefault();
+    getCategory();
+  }
+  // useEffect(()=>{
+  //   getCategory()
+  // },[SearchData])
   return (
     <section className="w-full">
-      {/* Order Modal Start */}
-      <div
-        id="order-modal"
-        className={`${orderModal === true ? `block` : `hidden`
-          }  block overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full`}
-      >
-        <div className="fixed w-full h-screen " style={{ backgroundColor: "rgba(0,0,0,0.8)" }}>
-          <div className="relative p-4 px-20 w-full max-w-full max-h-full">
-            <div className="relative bg-white rounded-lg shadow ">
-              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t ">
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Product Image's & Price
-                </h3>
-                <button
-                  onClick={() => setOrderModal(false)}
-                  type="button"
-                  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
-                  data-modal-hide="order-modal"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 14"
-                  >
-                    <path
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                    />
-                  </svg>
-                  <span className="sr-only">Close modal</span>
-                </button>
-              </div>
-              <div className="p-4 md:p-5 space-y-4">
-                <div className="grid grid-cols-[22%_45%_27%] gap-10">
-                  <div className="border-2 rounded-md shadow-md p-4">
-                    <img src="https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/13278488/2021/2/11/902af913-69be-4024-b22c-cd573b7dd13b1613028902744-Roadster-Men-Tshirts-9521613028900435-1.jpg" alt="" />
-                  </div>
-                  <div className="flex items-start flex-wrap gap-5 border-2 rounded-md shadow-md p-3">
-                    <img className="w-36" src="https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/13278488/2021/2/11/7f8383cc-07f5-4714-b451-fba7d49776921613028902727-Roadster-Men-Tshirts-9521613028900435-2.jpg" alt="" />
-                    <img className="w-36" src="https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/13278488/2021/2/11/5d8249b2-cbfa-42a3-9b8a-9406fcb8af0c1613028902710-Roadster-Men-Tshirts-9521613028900435-3.jpg" alt="" />
-                    <img className="w-36" src="https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/13278488/2021/2/11/bf9e30b3-5b8e-4cf1-811b-81ea64d45ed81613028902692-Roadster-Men-Tshirts-9521613028900435-4.jpg" alt="" />
-                    <img className="w-36" src="https://assets.myntassets.com/h_720,q_90,w_540/v1/assets/images/13278488/2021/2/11/77451543-64cb-4294-8f82-24ac1d78dcf01613028902666-Roadster-Men-Tshirts-9521613028900435-5.jpg" alt="" />
-                  </div>
-                  <div className="border-2 rounded-md shadow-md p-3">
-                    <h3 className="text-center font-semibold text-[20px]">Product Details</h3>
-                    <ul className="space-y-4 mt-8">
-                      <li className="font-semibold text-[17px]">Price : <span className="font-normal text-[16px] ">&nbsp; ₹ 1500</span> </li>
-                      <li className="font-semibold text-[17px]">MRP :  <span className="font-normal text-[16px] ">&nbsp; ₹ 3000</span> </li>
-                      <li className="font-semibold text-[17px]">Manage Stock : <span className="font-normal text-[16px] ">&nbsp;  In Stock</span> </li>
-                      <li className="font-semibold text-[17px]">Brand Name: <span className="font-normal text-[16px] ">&nbsp;  Lev's</span> </li>
-                      <li className="font-semibold text-[17px]">Size : <span className="font-normal text-[16px] ">&nbsp; Xl </span> </li>
-                      <li className="font-semibold text-[17px]">Color : <span className="font-normal text-[16px] ">&nbsp; Red </span> </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Order Modal End */}
+      
+     
       <Breadcrumb path={"Parent Category"} path2={"View Category"} slash={"/"} />
       <div className="w-full min-h-[610px]">
         <div className="max-w-[1220px] mx-auto py-5">
+
+
+          <form onSubmit={submitSearchForm} action="" className='grid grid-cols-3 py-5 gap-5'>
+              <input onChange={getValueorSetValue} className='border-2 h-10' type="text" placeholder='Search By Cat Name' name='catName' />
+              <input onChange={getValueorSetValue}  className='border-2  h-10' type="text" placeholder='Search By Cat Desc' name='catDesc' />
+              <button className='bg-blue-500 text-white'>Search</button>
+          </form>
+
+
+
           <h3 className="text-[26px] font-semibold bg-slate-100 py-3 px-4 rounded-t-md border border-slate-400">
             View Category
           </h3>
@@ -226,7 +212,7 @@ else{
                             <input onChange={getTheCheckedID} name='deleteCheck' id="purple-checkbox" type="checkbox" value={items._id} className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 " />
                           </th>
                           <td className="px-6 py-4">
-                             {index+1}
+                                 {  (currentPage-1)*limit+(index+1)} 
                           </td>
                           <td className="px-6 py-4">
                             {items.categoryName}
@@ -263,6 +249,14 @@ else{
 
                 </tbody>
               </table>
+
+              <ResponsivePagination
+      current={currentPage}
+      total={totalPages}
+      onPageChange={setCurrentPage}
+    />
+
+
             </div>
 
           </div>
